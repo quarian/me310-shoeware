@@ -3,6 +3,7 @@ package com.shoeware.miro.shoeware;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -61,12 +62,11 @@ public class MainActivity extends ActionBarActivity {
     private Button mColorChangeButton;
 
     private Integer[] imageIDs = {
-            Color.BLUE,
-            Color.RED,
-            Color.GREEN,
-            Color.YELLOW,
-            Color.WHITE,
-            Color.BLACK
+            R.drawable.converse,
+            R.drawable.unikko,
+            R.drawable.lv,
+            R.drawable.adidas,
+            R.drawable.nike
     };
 
 
@@ -81,8 +81,9 @@ public class MainActivity extends ActionBarActivity {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                     // display the images selected
                     ImageView imageView = (ImageView) findViewById(R.id.image1);
-                    imageView.setBackgroundColor(imageIDs[position]);
-                    sendMessage(Integer.toString(imageIDs[position]));
+                    imageView.setBackgroundColor(Color.BLACK);
+                    imageView.setImageResource(imageIDs[position]);
+                    sendMessage(Integer.toString(position) + " LOGO");
                 }
             });
             mColorChangeButton = (Button) findViewById(R.id.color_button);
@@ -131,10 +132,9 @@ public class MainActivity extends ActionBarActivity {
         // returns an ImageView view
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView imageView = new ImageView(context);
+            imageView.setImageResource(imageIDs[position]);
             imageView.setBackgroundResource(itemBackground);
-            imageView.setBackgroundColor(imageIDs[position]);
-            imageView.setLayoutParams(new Gallery.LayoutParams(300, 300));
-            imageView.setPadding(50, 10, 50, 10);
+            imageView.setLayoutParams(new Gallery.LayoutParams(400, 400));
             return imageView;
         }
     }
@@ -287,8 +287,17 @@ public class MainActivity extends ActionBarActivity {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    int asInt = Integer.parseInt(readMessage);
-                    changeBackgroundColor(asInt);
+                    String[] split = readMessage.split(" ");
+                    int asInt;
+                    if (split.length > 1) {
+                        asInt = Integer.parseInt(split[0]);
+                        mImageSwitcher.setBackgroundColor(Color.BLACK);
+                        mImageSwitcher.setImageResource(imageIDs[asInt]);
+                    }
+                    else {
+                        asInt = Integer.parseInt(readMessage);
+                        changeBackgroundColor(asInt);
+                    }
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -333,6 +342,7 @@ public class MainActivity extends ActionBarActivity {
             case 1337:
                 int result = Integer.parseInt(data.getData().toString());
                 ImageView imageView = (ImageView) findViewById(R.id.image1);
+                imageView.setImageResource(0);
                 imageView.setBackgroundColor(result);
                 sendMessage(Integer.toString(result));
                 break;
@@ -363,6 +373,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void changeBackgroundColor(int target) {
+        mImageSwitcher.setImageResource(0);
         mImageSwitcher.setBackgroundColor(target);
     }
 }

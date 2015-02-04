@@ -26,10 +26,6 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ColorPicker"
-            android:label="@string/title_activity_color_picker" >
-        </activity>
-        <activity
             android:name=".ColorPickerActivity"
             android:label="@string/title_activity_color_picker" >
         </activity>
