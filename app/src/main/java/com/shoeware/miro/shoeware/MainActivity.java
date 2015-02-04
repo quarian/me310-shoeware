@@ -20,6 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -57,6 +58,8 @@ public class MainActivity extends ActionBarActivity {
     // Member object for the chat services
     private BluetoothService mBluetoothService = null;
 
+    private Button mColorChangeButton;
+
     private Integer[] imageIDs = {
             Color.BLUE,
             Color.RED,
@@ -79,7 +82,14 @@ public class MainActivity extends ActionBarActivity {
                     // display the images selected
                     ImageView imageView = (ImageView) findViewById(R.id.image1);
                     imageView.setBackgroundColor(imageIDs[position]);
-                    sendMessage(Integer.toString(position));
+                    sendMessage(Integer.toString(imageIDs[position]));
+                }
+            });
+            mColorChangeButton = (Button) findViewById(R.id.color_button);
+            mColorChangeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startColorPickerActivity();
                 }
             });
         }
@@ -88,6 +98,11 @@ public class MainActivity extends ActionBarActivity {
             setUpSwitcher();
         }
         setUpBT();
+    }
+
+    private void startColorPickerActivity() {
+        Intent i = new Intent(this, ColorPickerActivity.class);
+        startActivityForResult(i, 1337);
     }
 
     private class ImageAdapter extends BaseAdapter {
@@ -314,6 +329,13 @@ public class MainActivity extends ActionBarActivity {
                     Toast.makeText(this, "BT not enabled", Toast.LENGTH_SHORT).show();
                     finish();
                 }
+                break;
+            case 1337:
+                int result = Integer.parseInt(data.getData().toString());
+                ImageView imageView = (ImageView) findViewById(R.id.image1);
+                imageView.setBackgroundColor(result);
+                sendMessage(Integer.toString(result));
+                break;
         }
     }
 
@@ -341,7 +363,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void changeBackgroundColor(int target) {
-        int temp = target;
-        mImageSwitcher.setBackgroundColor(imageIDs[target]);
+        mImageSwitcher.setBackgroundColor(target);
     }
 }
