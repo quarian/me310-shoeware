@@ -76,4 +76,9 @@ public class ColorPickerActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "Please select color first!", Toast.LENGTH_SHORT).show();
+    }
 }

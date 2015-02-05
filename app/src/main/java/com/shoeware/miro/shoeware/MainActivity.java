@@ -8,6 +8,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
@@ -66,8 +67,41 @@ public class MainActivity extends ActionBarActivity {
             R.drawable.unikko,
             R.drawable.lv,
             R.drawable.adidas,
-            R.drawable.nike
+            R.drawable.nike,
+            R.drawable.discoball
     };
+
+    private boolean mDiscoMode = false;
+
+    private final String RED = "RED";
+    private final String GREEN = "GREEN";
+    private final String BLUE = "BLUE";
+
+    private final CountDownTimer mBlinkTimer = new CountDownTimer((1000+1)*1000, 500) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (mImageSwitcher.getTag() == RED) {
+                mImageSwitcher.setBackgroundColor(Color.BLUE);
+                mImageSwitcher.setTag(BLUE);
+            }
+            else if (mImageSwitcher.getTag() == BLUE) {
+                mImageSwitcher.setBackgroundColor(Color.GREEN);
+                mImageSwitcher.setTag(GREEN);
+            } else if (mImageSwitcher.getTag() == GREEN) {
+                mImageSwitcher.setBackgroundColor(Color.RED);
+                mImageSwitcher.setTag(RED);
+            } else {
+                mImageSwitcher.setBackgroundColor(Color.BLUE);
+                mImageSwitcher.setTag(BLUE);
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            start();
+        }
+    };
+
 
 
     @Override
@@ -291,8 +325,17 @@ public class MainActivity extends ActionBarActivity {
                     int asInt;
                     if (split.length > 1) {
                         asInt = Integer.parseInt(split[0]);
-                        mImageSwitcher.setBackgroundColor(Color.BLACK);
-                        mImageSwitcher.setImageResource(imageIDs[asInt]);
+                        if (asInt == 5) {// Disco mode!
+                            mDiscoMode = true;
+                            discoMode(mDiscoMode);
+                        } else {
+                            if (mDiscoMode) {
+                                mDiscoMode = false;
+                                discoMode(mDiscoMode);
+                            }
+                            mImageSwitcher.setBackgroundColor(Color.BLACK);
+                            mImageSwitcher.setImageResource(imageIDs[asInt]);
+                        }
                     }
                     else {
                         asInt = Integer.parseInt(readMessage);
@@ -373,7 +416,20 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void changeBackgroundColor(int target) {
+        if (mDiscoMode) {
+            mDiscoMode = false;
+            discoMode(mDiscoMode);
+        }
         mImageSwitcher.setImageResource(0);
         mImageSwitcher.setBackgroundColor(target);
+    }
+
+    public void discoMode(boolean on) {
+        mImageSwitcher.setImageResource(0);
+        mDiscoMode = on;
+        if (on)
+            mBlinkTimer.start();
+        else
+            mBlinkTimer.cancel();
     }
 }
