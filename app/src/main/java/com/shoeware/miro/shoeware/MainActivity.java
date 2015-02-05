@@ -62,6 +62,8 @@ public class MainActivity extends ActionBarActivity {
 
     private Button mColorChangeButton;
 
+    private Button mAnimateButton;
+
     private Integer[] imageIDs = {
             R.drawable.converse,
             R.drawable.unikko,
@@ -127,6 +129,13 @@ public class MainActivity extends ActionBarActivity {
                     startColorPickerActivity();
                 }
             });
+            mAnimateButton = (Button) findViewById(R.id.animate);
+            mAnimateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startAnimateActivity();
+                }
+            });
         }
         else {
             setContentView(R.layout.activity_main);
@@ -138,6 +147,11 @@ public class MainActivity extends ActionBarActivity {
     private void startColorPickerActivity() {
         Intent i = new Intent(this, ColorPickerActivity.class);
         startActivityForResult(i, 1337);
+    }
+
+    private void startAnimateActivity() {
+        Intent i = new Intent(this, BouncingBallActivity.class);
+        sendMessage("1337");
     }
 
     private class ImageAdapter extends BaseAdapter {
@@ -339,7 +353,10 @@ public class MainActivity extends ActionBarActivity {
                     }
                     else {
                         asInt = Integer.parseInt(readMessage);
-                        changeBackgroundColor(asInt);
+                        if (asInt ==  1337)
+                            showAnimation();
+                        else
+                            changeBackgroundColor(asInt);
                     }
                     break;
                 case MESSAGE_DEVICE_NAME:
@@ -355,6 +372,12 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     };
+
+    private void showAnimation() {
+        Intent i = new Intent(this, BouncingBallActivity.class);
+        startActivity(i);
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(D) Log.d(TAG, "onActivityResult " + resultCode);
         switch (requestCode) {

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -27,7 +28,13 @@
         </activity>
         <activity
             android:name=".ColorPickerActivity"
-            android:label="@string/title_activity_color_picker" >
+            android:label="@string/title_activity_color_picker"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".BouncingBallActivity"
+            android:label="@string/title_activity_bouncing_ball"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
